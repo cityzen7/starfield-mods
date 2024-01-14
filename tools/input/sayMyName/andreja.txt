@@ -1,0 +1,18 @@
+004b8167,0.6,1.7,for you, {name}.
+00dd13dc,0.9,3.0,Ah hello: {name}.
+004fff5a,0.55,1.5,Barrett: and {name},
+000d40a0,1.0,2.5,something for you: {name}?
+007375b2,0.8,2.5,Excellent to see you: {name}.
+0032eb80,1.2,2.3,I am here if you need me: {name}.
+00177d16,1.35,2.9,I'll be here when you need me: {name}.
+008c3a6c,0.9,2.2,I will follow: {name}
+001fad92,1.05,2.5,should you need me: {name}.
+#todo below this line
+00bc435d,I will be here for you, as always.
+009e6473,Take care, love.
+00ae4a02,I am grateful for our time together. Always.
+00bdeb73,Come back to me soon, dearest.
+004ffd5a,I am so grateful for you.
+00c1166d,I was just thinking about you...
+002a1747,I will be thinking about you.
+00036c79,I am sorry to see you go.

@@ -40,3 +40,8 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+config.json
+.gradle/
+.idea/
+input/
+!input/sayMyName/andreja.txt
