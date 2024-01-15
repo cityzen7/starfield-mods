@@ -7,12 +7,11 @@
 00177d16,1.35,2.9,I'll be here when you need me: {name}.
 008c3a6c,0.9,2.2,I will follow: {name}
 001fad92,1.05,2.5,should you need me: {name}.
-#todo below this line
-00bc435d,I will be here for you, as always.
-009e6473,Take care, love.
-00ae4a02,I am grateful for our time together. Always.
-00bdeb73,Come back to me soon, dearest.
-004ffd5a,I am so grateful for you.
-00c1166d,I was just thinking about you...
-002a1747,I will be thinking about you.
-00036c79,I am sorry to see you go.
+00bc435d,be here for you: {name}.
+009e6473,Take care: {name}.
+00ae4a02,I am grateful for our time together: {name}.
+00bdeb73,Come back to me soon: {name}.
+004ffd5a,I am so grateful for you: {name}.
+00c1166d,I was just thinking about you: {name}
+002a1747,I will be thinking about you: {name}.
+00036c79,I am sorry to see you go: {name}.

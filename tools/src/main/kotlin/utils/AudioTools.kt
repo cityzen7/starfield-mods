@@ -3,6 +3,9 @@ package utils
 import runCommand
 import java.io.File
 import java.lang.IllegalArgumentException
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import kotlin.io.path.Path
 
 data class Silence(val start: Double, val end: Double, val duration: Double)
 
@@ -26,7 +29,7 @@ fun File.trimAudio(outPut: File, start: Double, end: Double, sampleRate: Int? = 
     if (!outPut.exists()) throw IllegalArgumentException("Trim Audio failed:\n$result")
 }
 
-fun File.combineAudio(outPut: File, prefixName: String, suffixName: String){
+fun File.combineAudio(outPut: File, prefixName: String, suffixName: String) {
     val prefix = if (File("$parent/$prefixName.wav").exists()) "$prefixName.wav " else ""
     val suffix = if (File("$parent/$suffixName.wav").exists()) " $suffixName.wav" else ""
 

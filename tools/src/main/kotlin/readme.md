@@ -87,6 +87,12 @@ Andreja
 - "000d40a0": "Did you need me to carry something for you?",
 - "004fff5a": "If you get into trouble, Barrett, you know where to find me.",
 
+### Convert wem to wav WIP
+```
+wine ww2ogg.exe test.wem --pcb "./packed_codebooks_aoTuV_603.bin"
+```
+
+
 ## TTS
 
 Instructions

@@ -1,5 +1,3 @@
-package starfield
-
 import utils.readConfig
 import java.io.File
 import java.nio.file.Files
