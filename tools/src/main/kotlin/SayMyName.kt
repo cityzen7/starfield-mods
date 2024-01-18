@@ -90,7 +90,7 @@ private fun String.toLine(name: String): Line {
         }
 
         parts[1].toDoubleOrNull() != null -> {
-            val contentStart = (parts[0] + parts[1] + parts[2]).length + 3
+            val contentStart = (parts[0] + parts[1]).length + 2
             val content = substring(contentStart).replace("{name}", name)
             Line(parts[0], parts[1].toDouble(), 100.0, content)
         }

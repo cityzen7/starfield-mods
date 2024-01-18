@@ -21,8 +21,8 @@ fun main() {
 //Requires a folder with ww2ogg.exe and ReVorb.exe
 private fun File.wemToWav(ww2oggFolder: File) {
     Files.copy(toPath(), Path(ww2oggFolder.absolutePath + "/temp.wem"), StandardCopyOption.REPLACE_EXISTING)
-    println(ww2oggFolder.runCommand(listOf("wine", "ww2ogg.exe", "temp.wem", "--pcb ./packed_codebooks_aoTuV_603.bin")))
-    println(ww2oggFolder.runCommand("wine ReVorb.exe temp.ogg temp1.ogg"))
-    println(ww2oggFolder.runCommand("sox temp1.ogg temp.wav"))
-    Files.copy(Path(ww2oggFolder.absolutePath + "/temp.wav"), File("$absolutePath/$nameWithoutExtension.wav").toPath(), StandardCopyOption.REPLACE_EXISTING)
+    ww2oggFolder.runCommand(listOf("wine", "ww2ogg.exe", "temp.wem", "--pcb", "./packed_codebooks_aoTuV_603.bin"))
+    ww2oggFolder.runCommand("wine ReVorb.exe temp.ogg temp1.ogg")
+    ww2oggFolder.runCommand("sox temp1.ogg temp.wav")
+    Files.copy(Path(ww2oggFolder.absolutePath + "/temp.wav"), File("${parentFile.absolutePath}/$nameWithoutExtension.wav").toPath(), StandardCopyOption.REPLACE_EXISTING)
 }
