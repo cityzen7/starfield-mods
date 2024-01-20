@@ -5,7 +5,7 @@ data class SayMyNameStats(val linesPerName: Int, val playerStats: MutableMap<Str
     private fun totalTime() = playerStats.values.sumOf { it.time }
 
     fun print() {
-        val formattedTime = totalTime()/1000f
+        val formattedTime = totalTime() / 1000f
         val divider = max(playerStats.size, 1)
         println(cyan("Processed ${totalSuccesses()}/${linesPerName * divider} total lines in $formattedTime seconds"))
     }
@@ -13,9 +13,15 @@ data class SayMyNameStats(val linesPerName: Int, val playerStats: MutableMap<Str
 
 data class SayMyNamePlayerNameStats(val name: String, var successes: Int, var time: Long = 0) {
     fun print(linesPerName: Int) {
-        val formattedTime = time/1000f
-        if (successes != linesPerName || formattedTime > .5f) {
-            println("Processed $successes/$linesPerName lines for $name in $formattedTime seconds")
+        if (successes != linesPerName || time > 500f) {
+            println("Processed $successes/$linesPerName lines for $name in ${time.formatTime()} hrs:min:sec")
         }
     }
+}
+
+fun Long.formatTime(): String {
+    val seconds = ((this % (60 * 1000)) / 1000).toString().padStart(2, '0')
+    val minutes = ((this  % (60 * 60 * 1000))/ (60 * 1000)).toString().padStart(2, '0')
+    val hours = (this / (60 * 60 * 1000)).toString().padStart(2, '0')
+    return "$hours:$minutes:$seconds"
 }
