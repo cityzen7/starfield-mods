@@ -1,16 +1,17 @@
-004b8167,0.6,1.7,for you, {name}.
-00dd13dc,0.9,3.0,Ah hello: {name}.
-004fff5a,0.55,1.5,Barrett: and {name},
-000d40a0,1.0,2.5,something for you: {name}?
-007375b2,0.8,2.5,Excellent to see you: {name}.
-0032eb80,1.2,2.3,I am here if you need me: {name}.
-00177d16,1.35,2.9,I'll be here when you need me: {name}.
-008c3a6c,0.9,2.2,I will follow: {name}
-001fad92,1.05,2.5,should you need me: {name}.
-00bc435d,0.95,be here for you: {name}.
 00ae4a02,2.3,I am grateful for our time together: {name}.
+00ae4a02,2.1
+00bc435d,0.95,be here for you: {name}.
 00bdeb73,1.15,Come back to me soon: {name}.
-004ffd5a,2.15,I am so grateful for you: {name}.
-00c1166d,2.7,I was just thinking about you: {name}
+00c1166d,2.7,I was just thinking about you: {name}.
+000d40a0,1.0,2.5,something for you: {name}?
+00dd13dc,0.9,3.0,Ah hello: {name}.
+001fad92,1.05,2.5,should you need me: {name}.
 002a1747,1.85,I will be thinking about you: {name}.
+004b8167,0.6,1.7,for you, {name}.
+004ffd5a,2.15,I am so grateful for you: {name}.
+004fff5a,0.55,1.5,Barrett: and {name},
+008c3a6c,0.9,2.2,I will follow: {name}
+0032eb80,1.2,2.3,I am here if you need me: {name}.
 00036c79,1.3,I am sorry to see you go: {name}.
+00177d16,1.35,2.9,I'll be here when you need me: {name}.
+007375b2,0.8,2.5,Excellent to see you: {name}.
