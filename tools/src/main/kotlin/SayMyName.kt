@@ -5,6 +5,7 @@ import utils.trimAudio
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import kotlin.io.path.Path
 
 fun main() {
     val config = readConfig()
@@ -61,13 +62,20 @@ private fun generateLines(
     overrides: Map<String, String>,
     voices: List<String>
 ) {
+    val cache = mutableMapOf<String, String>()
     filteredLines.map { line ->
         try {
             val ttsOut = File(coquiDir.absolutePath + "/out/$playerName/${line.id}.wav")
             if (!ttsOut.exists()) {
                 val text = line.text(playerName, overrides)
-                println("Generating ${line.id}: '$text'")
-                processLine(line.id, text, coquiDir, voices, "./out/$playerName/${line.id}.wav")
+                val outPath = "./out/$playerName/${line.id}.wav"
+                if (cache.contains(text)) {
+                    Files.copy(Path(cache[text]!!), Path(outPath), StandardCopyOption.REPLACE_EXISTING)
+                } else {
+                    println("Generating ${line.id}: '$text'")
+                    processLine(line.id, text, coquiDir, voices, outPath)
+                    cache[text] = outPath
+                }
             }
         } catch (e: Exception) {
             println(red("Failed to generate $playerName ${line.id}: ${e.message}"))
