@@ -54,6 +54,12 @@ Ex:
 004b8167,0.6,for you, {name}.
 ```
 
+Lines can have additional positions to look for a name in. These additional positions are looked in order of latest position first, and then sooner positions until one is found.
+```
+004b8167,0.6,1.0,for you, {name}.
+004b8167,0.4
+```
+
 Tips
 - Make generation as small as possible to make trimming more consistent
 - Attempt to generate in such a way that silence surrounds the name (commas before, periods after)
@@ -69,23 +75,6 @@ Instructions
 - Update config with `sayMyName.stagingDirectory` where your working directory will be
 - Update config with `sayMyName.characters` as a list of names equivalent to `tts.voice`
 
-
-### Possible Lines
-
-Andreja
-- "00e4f7b1": "Hello, love.",
-- "009a9fa0": "Hello.",
-- "007375b2": "Hello! Excellent to see you.",
-- "00dd13dc": "Ah, hello.",
-- "00042c94": "Hello, dearest. I hope you are well-rested.",
-- "004b8167": "I would move the stars for you. But I hope it does not come to that.",
-- "0032eb80": "I am here if you need me.",
-- "00177d16": "I'll be here when you need me.",
-- "008c3a6c": "Lead, then. I will follow.",
-- "002ca9dd": "Of course, my dear. What do you want to know?",
-- "001fad92": "I am here for you, should you need me.",
-- "000d40a0": "Did you need me to carry something for you?",
-- "004fff5a": "If you get into trouble, Barrett, you know where to find me.",
 
 ### Convert wem to wav WIP
 ```

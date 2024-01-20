@@ -16,8 +16,8 @@ fun main() {
     val characters = (sayMyNameConfig["characters"] as Map<String, String>).keys
     val exitOnError = sayMyNameConfig["exitOnError"] as Boolean? ?: false
     val skipExisting = sayMyNameConfig["skipExisting"] as Boolean? ?: true
-    val onlyLine = sayMyNameConfig["skipExisting"]
-    val onlyName = sayMyNameConfig["skipExisting"]
+    val onlyName = (sayMyNameConfig["onlyName"] as String?)?.takeIf { it.isNotBlank() }
+    val onlyLine = (sayMyNameConfig["onlyLine"] as String?)?.takeIf { it.isNotBlank() }
 
     val playerNames = File("input/sayMyName/names.txt").readLines()
         .flatMap { it.split(",") }.map { it.trim().capitalize() }
@@ -30,7 +30,7 @@ fun main() {
         val tempFile = File(workingDir.absolutePath + "/temp.wav")
         val tempFile2 = File(workingDir.absolutePath + "/temp1.wav")
         val tempFile3 = File(workingDir.absolutePath + "/temp2.wav")
-        val lines = File("input/sayMyName/$character.txt").readLines().map { it.toLine() }
+        val lines = File("input/sayMyName/$character.txt").readLines().toLines()
         val stats = mutableMapOf<String, Int>()
 
         playerNames.forEach { playerName ->
@@ -58,11 +58,7 @@ fun main() {
                     Files.copy(ttsOut.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
 
                     val silences = getSilences(tempFile)
-
-                    //Start: next end of silence after the start timestamp
-                    val nameStart = silences.filter { it.end > line.start }.minByOrNull { it.end }?.end ?: throw IllegalStateException("Could not find a silence before the name")
-                    //End: latest start of silence BEFORE the end timestamp
-                    val nameEnd = silences.filter { it.start < line.end }.maxByOrNull { it.start }?.start ?: throw IllegalStateException("Could not find a silence after the name")
+                    val (nameStart, nameEnd) = line.getName(silences)
 
                     cleanName(tempFile, tempFile2, nameStart, nameEnd)
                     combineFile(line.id, tempFile2, tempFile3)
