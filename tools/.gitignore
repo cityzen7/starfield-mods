@@ -44,4 +44,4 @@ config.json
 .gradle/
 .idea/
 input/
-!input/sayMyName/andreja.txt
+!reference/sayMyName/andreja.txt

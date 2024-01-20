@@ -3,7 +3,9 @@ import java.lang.IllegalStateException
 import kotlin.math.max
 
 data class Line(val id: String, private val content: String, val silencesFromEnd: Int = 1) {
-    fun text(playerName: String) = content.replace("{name}", playerName)
+    fun text(playerName: String, overrides: Map<String, String>): String {
+        return overrides.getOrDefault(id, content).replace("{name}", playerName)
+    }
 
     fun getName(silences: List<Silence>): Pair<Double, Double> {
         //Use preferred config if possible, but if that's invalid, use the earliest silence
@@ -36,4 +38,20 @@ fun List<String>.toLines(): List<Line> {
             }
         }
     }
+}
+
+fun List<String>.toLineOverrides(): Map<String, Map<String, String>> {
+    val overrides = mutableMapOf<String, MutableMap<String, String>>()
+    forEach { line ->
+        val parts = line.split(",")
+        val name = parts[0]
+        val id = parts[1]
+        val content = if (parts.size == 2) "thank you: {name}." else {
+            val contentStart = (name + id).length + 2
+            line.substring(contentStart)
+        }
+        overrides.putIfAbsent(name, mutableMapOf())
+        overrides[name]?.put(id, content)
+    }
+    return overrides
 }

@@ -52,6 +52,14 @@ Ex:
 004b8167,for you, {name}.
 ```
 
+If a specific name is having trouble, add that line to the `character-name`-overrides.txt file.
+The file can specify custom text for the generation part. If you give no text, it will default to an attempt at minimum text plus the name
+```
+Al,004ffd5a,I am so grateful for you: {name}.
+Alice,00bdeb73
+```
+
+
 Tips
 - Make generation as small as possible to make trimming more consistent
 - Use colons instead of commas in order to get a good silence between the phrase and the name
