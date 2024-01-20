@@ -31,7 +31,7 @@ fun main() {
         val tempFile3 = File(workingDir.absolutePath + "/temp2.wav")
         val lines = File("reference/sayMyName/$character.txt").readLines().toLines()
         val lineOverrideFile = File("reference/sayMyName/$character-overrides.txt")
-        val lineOverrides = lineOverrideFile.readLines().toLineOverrides()
+        val lineOverrides = lineOverrideFile.readLines().toLineOverrides(lines)
         val stats = SayMyNameStats(lines.size)
 
         playerNames.forEach { playerName ->

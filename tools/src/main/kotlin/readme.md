@@ -53,7 +53,9 @@ Ex:
 ```
 
 If a specific name is having trouble, add that line to the `character-name`-overrides.txt file.
-The file can specify custom text for the generation part. If you give no text, it will default to an attempt at minimum text plus the name
+The file can specify custom text for the generation part. If you give no text, it will default to an attempt at minimum text plus the name.
+If only a name is given, all that characters lines will use the default override
+A later override will override a former override, so you can do the default for everything but then override that override for a specific line
 ```
 Al,004ffd5a,I am so grateful for you: {name}.
 Alice,00bdeb73

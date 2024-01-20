@@ -3,9 +3,8 @@ Al,004ffd5a
 Al,00036c79
 Alan,00bdeb73
 Alice,00bdeb73
-Kirk,00dd13dc
-Kirk,00177d16
-Kirk,007375b2
+Kirk
+Kirk,004fff5a,Barret and: Kirk
 Bailey,00dd13dc
 Banner,00bc435d
 Baron,00bc435d
