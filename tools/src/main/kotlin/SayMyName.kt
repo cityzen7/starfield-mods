@@ -30,8 +30,8 @@ fun main() {
         val tempFile = File(workingDir.absolutePath + "/temp.wav")
         val tempFile2 = File(workingDir.absolutePath + "/temp1.wav")
         val tempFile3 = File(workingDir.absolutePath + "/temp2.wav")
-        val lines = File("input/sayMyName/$character.txt").readLines().toLines()
-        val lineOverrides = File("input/sayMyName/$character-overrides.txt").readLines().toLineOverrides()
+        val lines = File("reference/sayMyName/$character.txt").readLines().toLines()
+        val lineOverrides = File("reference/sayMyName/$character-overrides.txt").readLines().toLineOverrides()
         val stats = mutableMapOf<String, Int>()
 
         playerNames.forEach { playerName ->
