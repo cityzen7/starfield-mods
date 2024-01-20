@@ -9,7 +9,7 @@ import kotlin.io.path.Path
 
 data class Silence(val start: Double, val end: Double, val duration: Double)
 
-fun getSilences(file: File, threshold: Int = -30, duration: String = "0.01"): List<Silence> {
+fun getSilences(file: File, threshold: Int = -30, duration: String = "0.1"): List<Silence> {
     val cmd = "ffmpeg -i ${file.name} -af silencedetect=noise=${threshold}dB:d=${duration} -f null -"
     val result = file.parentFile.runCommand(cmd) ?: ""
     return result.split("\n").flatMap { it.split("\r") }.filter { it.startsWith("[silencedetect @") }.chunked(2).map { (rawStart, rawEnd) ->

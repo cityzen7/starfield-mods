@@ -38,32 +38,24 @@ Cydonia - B 01
 ## Say My name
 
 Example Line:
-Id, Start, End, Line Contents
+Id, Jumps Back, Line Contents
 ```
-004b8167,0.6,1.7,for you, {name}.
+004b8167,1,for you, {name}.
 ```
 Id: Name of Wem file to generate
-Start: As close to right before the name as possible, accounting for variations taking longer or slower
-End: As close to right after the name as possible, accounting for variations taking longer or slower
+Jumps Back: Defaults to 1, this is number of silences to go back from the end before the name starts. If the name is the last word, you can use the default, if you have more gaps, you may want to raise that number higher.
 Line Contents: Small phrase that should trigger the name being said naturally
 
-A line can omit either/both start and end. If only one number is given, it's considered the start. Default start and end are 0.0 and 100.
+A line can omit jumps back.
 Ex:
 ```
 004b8167,for you, {name}.
-004b8167,0.6,for you, {name}.
-```
-
-Lines can have additional positions to look for a name in. These additional positions are looked in order of latest position first, and then sooner positions until one is found.
-```
-004b8167,0.6,1.0,for you, {name}.
-004b8167,0.4
 ```
 
 Tips
 - Make generation as small as possible to make trimming more consistent
-- Attempt to generate in such a way that silence surrounds the name (commas before, periods after)
 - Use colons instead of commas in order to get a good silence between the phrase and the name
+- The most important thing is to have a long pause before the name. Colons should work for this
 
 Instructions
 - Add `input/sayMyName/names.txt` with your list of names to use
