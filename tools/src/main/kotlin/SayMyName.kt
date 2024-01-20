@@ -1,4 +1,3 @@
-import kotlinx.coroutines.*
 import utils.combineAudio
 import utils.getSilences
 import utils.readConfig
@@ -6,7 +5,6 @@ import utils.trimAudio
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
-import kotlin.math.max
 
 fun main() {
     val config = readConfig()
@@ -21,7 +19,7 @@ fun main() {
     val onlyLine = (sayMyNameConfig["onlyLine"] as String?)?.takeIf { it.isNotBlank() }
 
     val playerNames = File("input/sayMyName/names.txt").readLines()
-        .flatMap { it.split(",") }.map { it.trim().capitalize() }
+        .flatMap { it.split(",") }.map { it.trim().capitalize() }.filter { it.isNotBlank() }
         .let { names -> if (onlyName != null) names.filter { it == onlyName } else names }
 
     characters.forEach { character ->
@@ -34,7 +32,7 @@ fun main() {
         val lines = File("reference/sayMyName/$character.txt").readLines().toLines()
         val lineOverrideFile = File("reference/sayMyName/$character-overrides.txt")
         val lineOverrides = lineOverrideFile.readLines().toLineOverrides()
-        val stats = mutableMapOf<String, Int>()
+        val stats = SayMyNameStats(lines.size)
 
         playerNames.forEach { playerName ->
             File(workingDir.absolutePath + "/out/$playerName/").mkdirs()
@@ -42,14 +40,17 @@ fun main() {
             val overrides = lineOverrides[playerName] ?: mapOf()
             val filteredLines = lines.let { if (onlyLine != null) it.filter { line -> line.id == onlyLine } else it }
                 .filter { !skipExisting || !File("${workingDir.absolutePath}/out/$playerName/${it.id}.wav").exists() }
-            stats[playerName] = lines.size - filteredLines.size
+            val start = System.currentTimeMillis()
+            val playerStats = SayMyNamePlayerNameStats(playerName, lines.size - filteredLines.size)
+            stats.playerStats[playerName] = playerStats
 
             generateLines(filteredLines, coquiDir, playerName, overrides, voices)
 
-            processLines(filteredLines, coquiDir, playerName, overrides, lineOverrideFile, tempFile, tempFile2, tempFile3, workingDir, stats, exitOnError)
-            printStats(stats, lines.size, playerName)
+            processLines(filteredLines, coquiDir, playerName, overrides, lineOverrideFile, tempFile, tempFile2, tempFile3, workingDir, playerStats, exitOnError)
+            playerStats.time = System.currentTimeMillis() - start
+            playerStats.print(lines.size)
         }
-        printStats(stats, lines.size)
+        stats.print()
     }
 }
 
@@ -60,7 +61,7 @@ private fun generateLines(
     overrides: Map<String, String>,
     voices: List<String>
 ) {
-    filteredLines.take(2).map { line ->
+    filteredLines.map { line ->
         try {
             val ttsOut = File(coquiDir.absolutePath + "/out/$playerName/${line.id}.wav")
             if (!ttsOut.exists()) {
@@ -84,7 +85,7 @@ private fun processLines(
     tempFile2: File,
     tempFile3: File,
     workingDir: File,
-    stats: MutableMap<String, Int>,
+    stats: SayMyNamePlayerNameStats,
     exitOnError: Boolean
 ) {
     filteredLines.forEach { line ->
@@ -108,7 +109,7 @@ private fun processLines(
             combineFile(line.id, tempFile2, tempFile3)
             val finished = File(workingDir.absolutePath + "/out/$playerName/${line.id}.wav")
             Files.copy(tempFile3.toPath(), finished.toPath(), StandardCopyOption.REPLACE_EXISTING)
-            stats[playerName] = stats.getOrDefault(playerName, 0) + 1
+            stats.successes += 1
         } catch (e: Exception) {
             println(red("Failed to process $playerName ${line.id}: ${e.message ?: e.stackTraceToString()}"))
             if (exitOnError) throw IllegalStateException("Encountered Error")
@@ -126,14 +127,4 @@ private fun cleanName(input: File, outPut: File, start: Double, end: Double) {
 
 private fun combineFile(id: String, input: File, outPut: File) {
     input.combineAudio(outPut, id, "$id-2")
-}
-
-private fun printStats(stats: Map<String, Int>, lineCountForCharacter: Int) {
-    val divider = max(stats.size, 1)
-    println(cyan("Processed ${stats.values.sum()}/${lineCountForCharacter * divider} total lines"))
-}
-
-private fun printStats(stats: Map<String, Int>, lineCountForCharacter: Int, name: String) {
-    val numerator = stats[name] ?: 0
-    if (numerator != lineCountForCharacter) println("Processed $numerator/$lineCountForCharacter lines for $name")
 }
