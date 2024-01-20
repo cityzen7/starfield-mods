@@ -1,5 +1,4 @@
 import utils.Silence
-import java.lang.IllegalStateException
 import kotlin.math.max
 
 data class Line(val id: String, private val content: String, val silencesFromEnd: Int = 1) {
@@ -15,8 +14,6 @@ data class Line(val id: String, private val content: String, val silencesFromEnd
 
         val nameStart = silences.getOrNull(start)?.end ?: 0.0
         val nameEnd = silences.getOrNull(end)?.start ?: 0.0
-
-        if (nameStart >= nameEnd) throw IllegalStateException("Could not find proper start and end")
 
         return Pair(nameStart, nameEnd)
     }

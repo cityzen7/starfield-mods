@@ -31,7 +31,8 @@ fun main() {
         val tempFile2 = File(workingDir.absolutePath + "/temp1.wav")
         val tempFile3 = File(workingDir.absolutePath + "/temp2.wav")
         val lines = File("reference/sayMyName/$character.txt").readLines().toLines()
-        val lineOverrides = File("reference/sayMyName/$character-overrides.txt").readLines().toLineOverrides()
+        val lineOverrideFile = File("reference/sayMyName/$character-overrides.txt")
+        val lineOverrides = lineOverrideFile.readLines().toLineOverrides()
         val stats = mutableMapOf<String, Int>()
 
         playerNames.forEach { playerName ->
@@ -62,6 +63,15 @@ fun main() {
 
                     val silences = getSilences(tempFile)
                     val (nameStart, nameEnd) = line.getName(silences)
+
+                    if (nameStart >= nameEnd) {
+                        //First time failing, delete generated line and add to overrides to next gen does just base name
+                        if (overrides[line.id] == null) {
+                            ttsOut.delete()
+                            lineOverrideFile.appendText("$playerName,${line.id}\n")
+                        }
+                        throw java.lang.IllegalStateException("Could not find proper start and end")
+                    }
 
                     cleanName(tempFile, tempFile2, nameStart, nameEnd)
                     combineFile(line.id, tempFile2, tempFile3)
