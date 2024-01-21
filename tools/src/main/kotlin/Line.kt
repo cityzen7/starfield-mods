@@ -1,6 +1,8 @@
 import utils.Silence
 import kotlin.math.max
 
+data class Recipe(val playerName: String, val lines: List<Line>, val stats: SayMyNamePlayerNameStats, val overrides: Map<String, String>)
+
 data class Line(val id: String, private val content: String, val silencesFromEnd: Int = 1) {
     fun text(playerName: String, overrides: Map<String, String>): String {
         return overrides.getOrDefault(id, content).replace("{name}", playerName)

@@ -15,6 +15,7 @@ fun main() {
     val characters = (sayMyNameConfig["characters"] as Map<String, String>).keys
     val exitOnError = sayMyNameConfig["exitOnError"] as Boolean? ?: false
     val skipExisting = sayMyNameConfig["skipExisting"] as Boolean? ?: true
+    val batchSize = sayMyNameConfig["batchSize"] as Int? ?: 2
     val onlyName = (sayMyNameConfig["onlyName"] as String?)?.takeIf { it.isNotBlank() }
     val onlyLine = (sayMyNameConfig["onlyLine"] as String?)?.takeIf { it.isNotBlank() }
 
@@ -34,43 +35,49 @@ fun main() {
         val lineOverrides = lineOverrideFile.readLines().toLineOverrides(lines)
         val stats = SayMyNameStats(lines.size)
 
-        playerNames.forEach { playerName ->
+        val recipes = playerNames.map { playerName ->
             File(workingDir.absolutePath + "/out/$playerName/").mkdirs()
             File(coquiDir.absolutePath + "/out/$playerName/").mkdirs()
             val overrides = lineOverrides[playerName] ?: mapOf()
             val filteredLines = lines.let { if (onlyLine != null) it.filter { line -> line.id == onlyLine } else it }
                 .filter { !skipExisting || !File("${workingDir.absolutePath}/out/$playerName/${it.id}.wav").exists() }
-            val start = System.currentTimeMillis()
             val playerStats = SayMyNamePlayerNameStats(playerName, lines.size - filteredLines.size)
             stats.playerStats[playerName] = playerStats
+            Recipe(playerName, filteredLines, playerStats, overrides)
+        }
 
-            generateLines(filteredLines, coquiDir, playerName, overrides, voices)
+        recipes.chunked(batchSize).forEach { batch ->
+            val start = System.currentTimeMillis()
+            generateLines(batch, coquiDir, voices)
+            batch.forEach { it.stats.time = System.currentTimeMillis() - start }
 
-            processLines(filteredLines, coquiDir, playerName, overrides, lineOverrideFile, tempFile, tempFile2, tempFile3, workingDir, playerStats, exitOnError)
-            playerStats.time = System.currentTimeMillis() - start
-            playerStats.print(lines.size)
+            batch.forEach { recipe ->
+                processLines(recipe.lines, coquiDir, recipe.playerName, recipe.overrides, lineOverrideFile, tempFile, tempFile2, tempFile3, workingDir, recipe.stats, exitOnError)
+                recipe.stats.print(lines.size)
+            }
         }
         stats.print()
     }
 }
 
 private fun generateLines(
-    filteredLines: List<Line>,
+    recipes: List<Recipe>,
     coquiDir: File,
-    playerName: String,
-    overrides: Map<String, String>,
     voices: List<String>
 ) {
-    val scripts = filteredLines.map { line ->
-        val text = line.text(playerName, overrides)
-        val outPath = "./out/$playerName/${line.id}.wav"
-        Script(text, outPath)
+    val names = recipes.joinToString(", ") { it.playerName }
+    println("Processing lines for $names")
+    val scripts = recipes.flatMap { recipe ->
+        recipe.lines.map {line ->
+            val text = line.text(recipe.playerName, recipe.overrides)
+            val outPath = "./out/${recipe.playerName}/${line.id}.wav"
+            Script(text, outPath)
+        }
     }
-    println("Processing lines for $playerName")
     try {
         processBatch(coquiDir, voices, scripts)
     } catch (e: Exception) {
-        println(red("Failed to generate lines for $playerName: ${e.message}, ${e.stackTraceToString()}"))
+        println(red("Failed to generate lines for $names: ${e.message}, ${e.stackTraceToString()}"))
     }
 }
 
