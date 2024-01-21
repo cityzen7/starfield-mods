@@ -5,6 +5,8 @@ import utils.trimAudio
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun main() {
     val config = readConfig()
@@ -49,12 +51,13 @@ fun main() {
         recipes.chunkedByLines(batchSize).forEach { batch ->
             val start = System.currentTimeMillis()
             generateLines(batch, coquiDir, voices)
-            batch.forEach { it.stats.time = System.currentTimeMillis() - start }
 
             batch.forEach { recipe ->
                 processLines(recipe.lines, coquiDir, recipe.playerName, recipe.overrides, lineOverrideFile, tempFile, tempFile2, tempFile3, workingDir, recipe.stats, exitOnError)
                 recipe.stats.print(lines.size)
             }
+            val elapsed = System.currentTimeMillis() - start
+            println(cyan("Processed Batch") + " ${batch.first().playerName}-${batch.last().playerName} in ${elapsed.formatTime()}")
         }
         stats.print()
     }
@@ -66,9 +69,10 @@ private fun generateLines(
     voices: List<String>
 ) {
     val names = recipes.filter { it.lines.isNotEmpty() }.joinToString(", ") { it.playerName }
-    println("Processing lines for $names")
+    val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss").format(Date())
+    println(cyan(currentDate) + ": Processing lines for $names")
     val scripts = recipes.flatMap { recipe ->
-        recipe.lines.map {line ->
+        recipe.lines.map { line ->
             val text = line.text(recipe.playerName, recipe.overrides)
             val outPath = "./out/${recipe.playerName}/${line.id}.wav"
             Script(text, outPath)

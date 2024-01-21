@@ -43,7 +43,7 @@ fun processLine(id: String, text: String, directory: File, voices: List<String>,
 
 data class Script(val text: String, val outPath: String)
 
-fun processBatch(directory: File, voices: List<String>, scripts: List<Script>){
+fun processBatch(directory: File, voices: List<String>, scripts: List<Script>, verbose: Boolean = false){
     val pyCode = """
 from TTS.api import TTS
 tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2", gpu=True)
@@ -58,7 +58,8 @@ tts.tts_to_file(text="${script.text}",
     }}
     """
     File("${directory.absolutePath}/inference.py").writeText(pyCode)
-    println(directory.runCommand("python3 inference.py"))
+    val result = directory.runCommand("python3 inference.py")
+    if (verbose) println(result)
 }
 
 private fun splitLine(line: String): Pair<String, String> {

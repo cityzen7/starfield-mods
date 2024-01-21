@@ -1,20 +1,20 @@
 import kotlin.math.max
 
 data class SayMyNameStats(val linesPerName: Int, val playerStats: MutableMap<String, SayMyNamePlayerNameStats> = mutableMapOf()) {
+    private val start = System.currentTimeMillis()
     private fun totalSuccesses() = playerStats.values.sumOf { it.successes }
-    private fun totalTime() = playerStats.values.sumOf { it.time }
 
     fun print() {
-        val formattedTime = totalTime() / 1000f
         val divider = max(playerStats.size, 1)
-        println(cyan("Processed ${totalSuccesses()}/${linesPerName * divider} total lines in $formattedTime seconds"))
+        val time = System.currentTimeMillis() - start
+        println(cyan("Processed ${totalSuccesses()}/${linesPerName * divider} total lines in ${time.formatTime()} (hrs:min:sec)"))
     }
 }
 
-data class SayMyNamePlayerNameStats(val name: String, var successes: Int, var time: Long = 0) {
+data class SayMyNamePlayerNameStats(val name: String, var successes: Int) {
     fun print(linesPerName: Int) {
-        if (successes != linesPerName || time > 500f) {
-            println("Processed $successes/$linesPerName lines for $name in ${time.formatTime()} hrs:min:sec")
+        if (successes != linesPerName) {
+            println("Processed $successes/$linesPerName lines for $name")
         }
     }
 }
