@@ -15,7 +15,7 @@ fun main() {
     val characters = (sayMyNameConfig["characters"] as Map<String, String>).keys
     val exitOnError = sayMyNameConfig["exitOnError"] as Boolean? ?: false
     val skipExisting = sayMyNameConfig["skipExisting"] as Boolean? ?: true
-    val batchSize = sayMyNameConfig["batchSize"] as Int? ?: 2
+    val batchSize = sayMyNameConfig["batchSize"] as Int? ?: 32
     val onlyName = (sayMyNameConfig["onlyName"] as String?)?.takeIf { it.isNotBlank() }
     val onlyLine = (sayMyNameConfig["onlyLine"] as String?)?.takeIf { it.isNotBlank() }
 
@@ -46,7 +46,7 @@ fun main() {
             Recipe(playerName, filteredLines, playerStats, overrides)
         }
 
-        recipes.chunked(batchSize).forEach { batch ->
+        recipes.chunkedByLines(batchSize).forEach { batch ->
             val start = System.currentTimeMillis()
             generateLines(batch, coquiDir, voices)
             batch.forEach { it.stats.time = System.currentTimeMillis() - start }
@@ -65,7 +65,7 @@ private fun generateLines(
     coquiDir: File,
     voices: List<String>
 ) {
-    val names = recipes.joinToString(", ") { it.playerName }
+    val names = recipes.filter { it.lines.isNotEmpty() }.joinToString(", ") { it.playerName }
     println("Processing lines for $names")
     val scripts = recipes.flatMap { recipe ->
         recipe.lines.map {line ->
