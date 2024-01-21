@@ -27,6 +27,8 @@ fun processLine(id: String, text: String, directory: File, voices: List<String>,
         "tts_models/multilingual/multi-dataset/xtts_v2",
         "--language_idx",
         "en",
+        "--use_cuda",
+        "true",
         "--speaker_wav"
     ) + voices +
             listOf(
@@ -37,6 +39,26 @@ fun processLine(id: String, text: String, directory: File, voices: List<String>,
             )
     println(cmd.joinToString(" "))
     println(directory.runCommand(cmd))
+}
+
+data class Script(val text: String, val outPath: String)
+
+fun processBatch(directory: File, voices: List<String>, scripts: List<Script>){
+    val pyCode = """
+from TTS.api import TTS
+tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2", gpu=True)
+
+${scripts.joinToString("\n") { script -> 
+"""
+tts.tts_to_file(text="${script.text}",
+                file_path="${script.outPath}",
+                speaker_wav=[${voices.joinToString(","){"\"$it\""}}],
+                language="en")
+"""
+    }}
+    """
+    File("${directory.absolutePath}/inference.py").writeText(pyCode)
+    println(directory.runCommand("python3 inference.py"))
 }
 
 private fun splitLine(line: String): Pair<String, String> {

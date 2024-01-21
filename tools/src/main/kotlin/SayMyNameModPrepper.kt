@@ -3,7 +3,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-private const val doSingleGroup = true
+private const val doSingleGroup = false
 
 fun main() {
     val config = readConfig()
@@ -18,6 +18,7 @@ fun main() {
     characters.forEach { (characterName, npcFolder) ->
         playerNameGroups.forEach { group ->
             val groupName = "say-my-name-$characterName-"+ group.first() + "-" + group.last()
+            println("Prepping group $groupName")
             group.forEach { player ->
                 val publishFolder = File(publishDir.absolutePath + "/$characterName/$groupName/Data/sound/voice/starfield.esm/$npcFolder/$player").also { it.mkdirs() }
                 val playerFolder = File(convertedDir.absolutePath + "/$characterName/$player")

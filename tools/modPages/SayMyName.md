@@ -8,6 +8,8 @@ The goal of this mod is to feature nearly all the same player names as Vasco say
 
 There will be different download options for different names, and I'll create a new mod for each new character (and link to them in the descriptions).
 
+I'll add a video in the video section for a preview of the voice, and you can see all the lines that are changed by looking at the text files on gihub: https://github.com/ManApart/starfield-mods/blob/master/tools/reference/sayMyName/
+
 ## Limits
 
 Because this is generated locally, the quality isn't the best on the market. (At this scale, something like using eleven labs would be expensive and time consuming).
@@ -64,4 +66,4 @@ If you'd like to make a request, please consider the following constraints:
 - Names should be between 1 and 3 syllables
 - Names should be a single word
 - If a name is not pronounced correctly, there is not really anything I can do within my current workflow
-- If a line for a given name is not saying the name, please report it by giving me the player name as well as the line id. You can look this up in github based on the character name and words. If you don't care enough to look up the id, I won't care enough to fix the line. https://github.com/ManApart/starfield-mods/blob/master/tools/reference/sayMyName/andreja.txt
+- If a line for a given name is not saying the name, please report it by giving me the player name as well as the line id. You can look this up in github based on the character name and words. If you don't care enough to look up the id, I won't care enough to fix the line. https://github.com/ManApart/starfield-mods/blob/master/tools/reference/sayMyName/

@@ -1,7 +1,5 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package starfield
-
 import utils.readConfig
 import java.io.File
 
