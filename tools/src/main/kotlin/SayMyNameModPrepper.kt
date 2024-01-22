@@ -11,20 +11,22 @@ fun main() {
     val characters = sayMyNameConfig["characters"] as Map<String, String>
     val convertedDir = File(sayMyNameConfig["convertedOut"] as String)
     val publishDir = File(sayMyNameConfig["stagingDirectory"] as String + "../publish")
-    val playerNameGroups = File("input/sayMyName/name-groups.txt").readLines()
-        .map { it.split(",") }.map { group -> group.map { it.trim().capitalize() } }
+    val playerNameGroups = File("input/sayMyName/name-groups.txt").readLines().filter { it.isNotBlank() }
+        .map { it.split(",") }.map { group -> group.map { it.trim().capitalize() }.filter { it.isNotBlank() } }
         .let { if (doSingleGroup) it.take(1) else it }
 
     characters.forEach { (characterName, npcFolder) ->
         playerNameGroups.forEach { group ->
-            val groupName = "say-my-name-$characterName-"+ group.first() + "-" + group.last()
+            val groupName = "say-my-name-$characterName-" + group.first() + "-" + group.last()
             println("Prepping group $groupName")
             group.forEach { player ->
                 val publishFolder = File(publishDir.absolutePath + "/$characterName/$groupName/Data/sound/voice/starfield.esm/$npcFolder/$player").also { it.mkdirs() }
                 val playerFolder = File(convertedDir.absolutePath + "/$characterName/$player")
-                playerFolder.stripWwiseSuffix()
-                playerFolder.listFiles()?.filter { it.name.endsWith(".wem") }?.forEach {
-                    Files.copy(it.toPath(), File(publishFolder.absolutePath + "/" + it.name).toPath(), StandardCopyOption.REPLACE_EXISTING)
+                if (playerFolder.exists()) {
+                    playerFolder.stripWwiseSuffix()
+                    playerFolder.listFiles()?.filter { it.name.endsWith(".wem") }?.forEach {
+                        Files.copy(it.toPath(), File(publishFolder.absolutePath + "/" + it.name).toPath(), StandardCopyOption.REPLACE_EXISTING)
+                    }
                 }
             }
         }
