@@ -14,3 +14,6 @@
 00036c79,I am sorry to see you go: {name}.
 00177d16,I'll be here when you need me: {name}.
 007375b2,Excellent to see you: {name}.
+00a5bb69,You will be lost without me: {name}.
+00ced070,Indeed I do: {name}.
+008fa79a,Of course: {name}.

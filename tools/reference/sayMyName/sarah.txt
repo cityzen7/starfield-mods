@@ -1,0 +1,24 @@
+0081cfb9,A lot on your mind: {name}?
+00c80370,What's happening, darling?
+00dd70de,Time to go: {name}?
+0083b8e4,If I can help you: {name}...
+00d19ec6,I'm ready to listen: {name}.
+006522f8,Maybe we'll talk later: {name}?
+00def51e,Catch you later: {name}.
+00da9f01,What can I help you with: {name}?
+00ba61ad,I've got your back: {name}.
+000ce591,It's about time: {name}.
+00b16940,I'll only carry the good stuff: {name}.
+00938141,I thought you'd never ask: {name}.
+000d7295,Want to see what I'm carrying: {name}?
+00e433c1,You are making me a bit jealous: {name}.
+007d53fc,Whatever you think is best: {name}.
+006cbe02,I'm right behind you: {name}.
+00f5531f,I'm glad you're back: {name}.
+00ef6cf1,I'm right behind you: {name}.
+00a4fff6,Take care of yourself: {name}.
+00cd457e,If you want help: {name}...
+003b96a5,Hope we can talk later: {name}.
+00b062cc,How's it going: {name}?
+00d3f580,Hey there: {name}.
+002ab230,Don't stay away too long: {name}.

@@ -18,6 +18,7 @@ fun main() {
     val exitOnError = sayMyNameConfig["exitOnError"] as Boolean? ?: false
     val skipExisting = sayMyNameConfig["skipExisting"] as Boolean? ?: true
     val batchSize = sayMyNameConfig["batchSize"] as Int? ?: 32
+    val onlyCharacter = (sayMyNameConfig["onlyCharacter"] as String?)?.takeIf { it.isNotBlank() }
     val onlyName = (sayMyNameConfig["onlyName"] as String?)?.takeIf { it.isNotBlank() }
     val onlyLine = (sayMyNameConfig["onlyLine"] as String?)?.takeIf { it.isNotBlank() }
 
@@ -25,42 +26,44 @@ fun main() {
         .flatMap { it.split(",") }.map { it.trim().capitalize() }.filter { it.isNotBlank() }
         .let { names -> if (onlyName != null) names.filter { it == onlyName } else names }
 
-    characters.forEach { character ->
-        println("Processing $character")
-        val voices = enumerateVoices(character, coquiDir)
-        val workingDir = File(stagingDir.absolutePath + "/$character")
-        val tempFile = File(workingDir.absolutePath + "/temp.wav")
-        val tempFile2 = File(workingDir.absolutePath + "/temp1.wav")
-        val tempFile3 = File(workingDir.absolutePath + "/temp2.wav")
-        val lines = File("reference/sayMyName/$character.txt").readLines().toLines()
-        val lineOverrideFile = File("reference/sayMyName/$character-overrides.txt")
-        val lineOverrides = lineOverrideFile.readLines().toLineOverrides(lines)
-        val stats = SayMyNameStats(lines.size)
+    characters
+        .let { names -> if (onlyCharacter != null) names.filter { it == onlyCharacter } else names }
+        .forEach { character ->
+            println("Processing $character")
+            val voices = enumerateVoices(character, coquiDir)
+            val workingDir = File(stagingDir.absolutePath + "/$character")
+            val tempFile = File(workingDir.absolutePath + "/temp.wav")
+            val tempFile2 = File(workingDir.absolutePath + "/temp1.wav")
+            val tempFile3 = File(workingDir.absolutePath + "/temp2.wav")
+            val lines = File("reference/sayMyName/$character.txt").readLines().toLines()
+            val lineOverrideFile = File("reference/sayMyName/$character-overrides.txt").also { if (!it.exists()) it.createNewFile() }
+            val lineOverrides = lineOverrideFile.readLines().toLineOverrides(lines)
+            val stats = SayMyNameStats(lines.size)
 
-        val recipes = playerNames.map { playerName ->
-            File(workingDir.absolutePath + "/out/$playerName/").mkdirs()
-            File(coquiDir.absolutePath + "/out/$playerName/").mkdirs()
-            val overrides = lineOverrides[playerName] ?: mapOf()
-            val filteredLines = lines.let { if (onlyLine != null) it.filter { line -> line.id == onlyLine } else it }
-                .filter { !skipExisting || !File("${workingDir.absolutePath}/out/$playerName/${it.id}.wav").exists() }
-            val playerStats = SayMyNamePlayerNameStats(playerName, lines.size - filteredLines.size)
-            stats.playerStats[playerName] = playerStats
-            Recipe(playerName, filteredLines, playerStats, overrides)
-        }
-
-        recipes.chunkedByLines(batchSize).forEach { batch ->
-            val start = System.currentTimeMillis()
-            generateLines(batch, coquiDir, voices)
-
-            batch.forEach { recipe ->
-                processLines(recipe.lines, coquiDir, recipe.playerName, recipe.overrides, lineOverrideFile, tempFile, tempFile2, tempFile3, workingDir, recipe.stats, exitOnError)
-                recipe.stats.print(lines.size)
+            val recipes = playerNames.map { playerName ->
+                File(workingDir.absolutePath + "/out/$playerName/").mkdirs()
+                File(coquiDir.absolutePath + "/out/$playerName/").mkdirs()
+                val overrides = lineOverrides[playerName] ?: mapOf()
+                val filteredLines = lines.let { if (onlyLine != null) it.filter { line -> line.id == onlyLine } else it }
+                    .filter { !skipExisting || !File("${workingDir.absolutePath}/out/$playerName/${it.id}.wav").exists() }
+                val playerStats = SayMyNamePlayerNameStats(playerName, lines.size - filteredLines.size)
+                stats.playerStats[playerName] = playerStats
+                Recipe(playerName, filteredLines, playerStats, overrides)
             }
-            val elapsed = System.currentTimeMillis() - start
-            println(cyan("Processed Batch") + " ${batch.first().playerName}-${batch.last().playerName} in ${elapsed.formatTime()}")
+
+            recipes.chunkedByLines(batchSize).forEach { batch ->
+                val start = System.currentTimeMillis()
+                generateLines(batch, coquiDir, voices)
+
+                batch.forEach { recipe ->
+                    processLines(recipe.lines, coquiDir, recipe.playerName, recipe.overrides, lineOverrideFile, tempFile, tempFile2, tempFile3, workingDir, recipe.stats, exitOnError)
+                    recipe.stats.print(lines.size)
+                }
+                val elapsed = System.currentTimeMillis() - start
+                println(cyan("Processed Batch") + " ${batch.first().playerName}-${batch.last().playerName} in ${elapsed.formatTime()}")
+            }
+            stats.print()
         }
-        stats.print()
-    }
 }
 
 private fun generateLines(
