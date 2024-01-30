@@ -41,9 +41,9 @@ fun processLine(id: String, text: String, directory: File, voices: List<String>,
     println(directory.runCommand(cmd))
 }
 
-data class Script(val text: String, val outPath: String)
+data class Script(val text: String, val outPath: String, val voices: List<String>)
 
-fun processBatch(directory: File, voices: List<String>, scripts: List<Script>, verbose: Boolean = false){
+fun processBatch(directory: File, scripts: List<Script>, verbose: Boolean = false){
     val pyCode = """
 from TTS.api import TTS
 tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2", gpu=True)
@@ -52,7 +52,7 @@ ${scripts.joinToString("\n") { script ->
 """
 tts.tts_to_file(text="${script.text}",
                 file_path="${script.outPath}",
-                speaker_wav=[${voices.joinToString(","){"\"$it\""}}],
+                speaker_wav=[${script.voices.joinToString(","){"\"$it\""}}],
                 language="en")
 """
     }}

@@ -30,7 +30,6 @@ fun main() {
         .let { names -> if (onlyCharacter != null) names.filter { it == onlyCharacter } else names }
         .forEach { character ->
             println("Processing $character")
-            val voices = enumerateVoices(character, coquiDir)
             val workingDir = File(stagingDir.absolutePath + "/$character")
             val tempFile = File(workingDir.absolutePath + "/temp.wav")
             val tempFile2 = File(workingDir.absolutePath + "/temp1.wav")
@@ -53,7 +52,7 @@ fun main() {
 
             recipes.chunkedByLines(batchSize).forEach { batch ->
                 val start = System.currentTimeMillis()
-                generateLines(batch, coquiDir, voices)
+                generateLines(batch, coquiDir, workingDir)
 
                 batch.forEach { recipe ->
                     processLines(recipe.lines, coquiDir, recipe.playerName, recipe.overrides, lineOverrideFile, tempFile, tempFile2, tempFile3, workingDir, recipe.stats, exitOnError)
@@ -69,7 +68,7 @@ fun main() {
 private fun generateLines(
     recipes: List<Recipe>,
     coquiDir: File,
-    voices: List<String>
+    workingDir: File
 ) {
     val names = recipes.filter { it.lines.isNotEmpty() }.joinToString(", ") { it.playerName }
     val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss").format(Date())
@@ -78,12 +77,16 @@ private fun generateLines(
         recipe.lines.map { line ->
             val text = line.text(recipe.playerName, recipe.overrides)
             val outPath = "./out/${recipe.playerName}/${line.id}.wav"
-            Script(text, outPath)
+            val voicePaths = listOfNotNull(
+                workingDir.absolutePath + "/${line.id}.wav",
+                File(workingDir.absolutePath + "/${line.id}-2.wav").takeIf { it.exists() }?.absolutePath
+            )
+            Script(text, outPath, voicePaths)
         }
     }
     try {
         if (scripts.isNotEmpty()) {
-            processBatch(coquiDir, voices, scripts)
+            processBatch(coquiDir, scripts)
         }
     } catch (e: Exception) {
         println(red("Failed to generate lines for $names: ${e.message}, ${e.stackTraceToString()}"))
