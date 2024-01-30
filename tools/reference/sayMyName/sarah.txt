@@ -1,5 +1,4 @@
 0081cfb9,A lot on your mind: {name}?
-00c80370,What's happening, darling?
 00dd70de,Time to go: {name}?
 0083b8e4,If I can help you: {name}...
 00d19ec6,I'm ready to listen: {name}.

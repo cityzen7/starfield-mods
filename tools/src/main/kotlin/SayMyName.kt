@@ -19,7 +19,7 @@ fun main() {
     val skipExisting = sayMyNameConfig["skipExisting"] as Boolean? ?: true
     val batchSize = sayMyNameConfig["batchSize"] as Int? ?: 32
     val onlyCharacter = (sayMyNameConfig["onlyCharacter"] as String?)?.takeIf { it.isNotBlank() }
-    val onlyName = (sayMyNameConfig["onlyName"] as String?)?.takeIf { it.isNotBlank() }
+    val onlyName = (sayMyNameConfig["onlyName"] as String?)?.takeIf { it.isNotBlank() }?.capitalize()
     val onlyLine = (sayMyNameConfig["onlyLine"] as String?)?.takeIf { it.isNotBlank() }
 
     val playerNames = File("input/sayMyName/names.txt").readLines()
@@ -73,7 +73,7 @@ private fun generateLines(
 ) {
     val names = recipes.filter { it.lines.isNotEmpty() }.joinToString(", ") { it.playerName }
     val currentDate = SimpleDateFormat("dd/M/yyyy hh:mm:ss").format(Date())
-    println(cyan(currentDate) + ": Processing lines for $names")
+    if (names.isNotBlank()) println(cyan(currentDate) + ": Processing lines for $names")
     val scripts = recipes.flatMap { recipe ->
         recipe.lines.map { line ->
             val text = line.text(recipe.playerName, recipe.overrides)
@@ -82,7 +82,9 @@ private fun generateLines(
         }
     }
     try {
-        processBatch(coquiDir, voices, scripts)
+        if (scripts.isNotEmpty()) {
+            processBatch(coquiDir, voices, scripts)
+        }
     } catch (e: Exception) {
         println(red("Failed to generate lines for $names: ${e.message}, ${e.stackTraceToString()}"))
     }
