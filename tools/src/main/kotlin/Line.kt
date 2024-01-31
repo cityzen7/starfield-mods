@@ -6,15 +6,20 @@ data class Line(val id: String, private val content: String, val silencesFromEnd
         return overrides.getOrDefault(id, content).replace("{name}", playerName)
     }
 
-    fun getName(silences: List<Silence>): Pair<Double, Double> {
+    fun getName(silences: List<Silence>, startShift: Int = silencesFromEnd, endShift: Int = silencesFromEnd): Pair<Double, Double> {
         //Use preferred config if possible, but if that's invalid, use the earliest silence
-        val start = max(silences.size - 1 - silencesFromEnd, 0)
+        val start = max(silences.size - 1 - startShift, 0)
 
-        val end = (silences.size - silencesFromEnd).let { if (it == start) it + 1 else it }
+        val end = (silences.size - endShift).let { if (it == start) it + 1 else it }
 
         val nameStart = silences.getOrNull(start)?.end ?: 0.0
         val nameEnd = silences.getOrNull(end)?.start ?: 0.0
 
+        //If too brief, try again with a sooner silence
+        val duration = nameEnd-nameStart
+        if (start > 0 && duration < 0.3 && duration > 0.01){
+            return getName(silences, startShift+1)
+        }
         return Pair(nameStart, nameEnd)
     }
 }

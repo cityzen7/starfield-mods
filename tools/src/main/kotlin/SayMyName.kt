@@ -83,7 +83,7 @@ private fun generateLines(
             )
             Script(text, outPath, voicePaths)
         }
-    }
+    }.filter { !File(coquiDir.absolutePath +"/" + it.outPath).exists() }
     try {
         if (scripts.isNotEmpty()) {
             processBatch(coquiDir, scripts)
