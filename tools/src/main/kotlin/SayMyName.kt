@@ -40,7 +40,7 @@ fun main() {
             val stats = SayMyNameStats(lines.size)
 
             val recipes = playerNames.map { playerName ->
-                File(workingDir.absolutePath + "/out/$character/$playerName/").mkdirs()
+                File(workingDir.absolutePath + "/out/$playerName/").mkdirs()
                 File(coquiDir.absolutePath + "/out/$character/$playerName/").mkdirs()
                 val overrides = lineOverrides[playerName] ?: mapOf()
                 val filteredLines = lines.let { if (onlyLine != null) it.filter { line -> line.id == onlyLine } else it }
