@@ -39,7 +39,7 @@ fun List<String>.toLines(): List<Line> {
 
 fun List<String>.toLineOverrides(lines: List<Line>): Map<String, Map<String, String>> {
     val overrides = mutableMapOf<String, MutableMap<String, String>>()
-    val defaultContent = "thank you: {name}."
+    val defaultContent = "this is my friend: {name}."
     forEach { line ->
         val parts = line.split(",")
         if (parts.size == 1) {
