@@ -11,7 +11,7 @@ fun main() {
     val characters = sayMyNameConfig["characters"] as Map<String, String>
     val convertedDir = File(sayMyNameConfig["convertedOut"] as String)
     val publishDir = File(sayMyNameConfig["stagingDirectory"] as String + "../publish")
-    val playerNameGroups = File("input/sayMyName/name-groups.txt").readLines().filter { it.isNotBlank() }
+    val playerNameGroups = File("reference/sayMyName/name-groups.txt").readLines().filter { it.isNotBlank() }
         .map { it.split(",") }.map { group -> group.map { it.trim().capitalize() }.filter { it.isNotBlank() } }
         .let { if (doSingleGroup) it.take(1) else it }
 

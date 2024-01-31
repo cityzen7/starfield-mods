@@ -35,19 +35,19 @@ fun main() {
             val tempFile2 = File(workingDir.absolutePath + "/temp1.wav")
             val tempFile3 = File(workingDir.absolutePath + "/temp2.wav")
             val lines = File("reference/sayMyName/$character.txt").readLines().toLines()
-            val lineOverrideFile = File("reference/sayMyName/$character-overrides.txt").also { if (!it.exists()) it.createNewFile() }
+            val lineOverrideFile = File("input/sayMyName/$character-overrides.txt").also { if (!it.exists()) it.createNewFile() }
             val lineOverrides = lineOverrideFile.readLines().toLineOverrides(lines)
             val stats = SayMyNameStats(lines.size)
 
             val recipes = playerNames.map { playerName ->
-                File(workingDir.absolutePath + "/out/$playerName/").mkdirs()
-                File(coquiDir.absolutePath + "/out/$playerName/").mkdirs()
+                File(workingDir.absolutePath + "/out/$character/$playerName/").mkdirs()
+                File(coquiDir.absolutePath + "/out/$character/$playerName/").mkdirs()
                 val overrides = lineOverrides[playerName] ?: mapOf()
                 val filteredLines = lines.let { if (onlyLine != null) it.filter { line -> line.id == onlyLine } else it }
                     .filter { !skipExisting || !File("${workingDir.absolutePath}/out/$playerName/${it.id}.wav").exists() }
                 val playerStats = SayMyNamePlayerNameStats(playerName, lines.size - filteredLines.size)
                 stats.playerStats[playerName] = playerStats
-                Recipe(playerName, filteredLines, playerStats, overrides)
+                Recipe(character, playerName, filteredLines, playerStats, overrides)
             }
 
             recipes.chunkedByLines(batchSize).forEach { batch ->
@@ -55,7 +55,7 @@ fun main() {
                 generateLines(batch, coquiDir, workingDir)
 
                 batch.forEach { recipe ->
-                    processLines(recipe.lines, coquiDir, recipe.playerName, recipe.overrides, lineOverrideFile, tempFile, tempFile2, tempFile3, workingDir, recipe.stats, exitOnError)
+                    processLines(recipe.lines, coquiDir, character, recipe.playerName, recipe.overrides, lineOverrideFile, tempFile, tempFile2, tempFile3, workingDir, recipe.stats, exitOnError)
                     recipe.stats.print(lines.size)
                 }
                 val elapsed = System.currentTimeMillis() - start
@@ -76,7 +76,7 @@ private fun generateLines(
     val scripts = recipes.flatMap { recipe ->
         recipe.lines.map { line ->
             val text = line.text(recipe.playerName, recipe.overrides)
-            val outPath = "./out/${recipe.playerName}/${line.id}.wav"
+            val outPath = "./out/${recipe.character}/${recipe.playerName}/${line.id}.wav"
             val voicePaths = listOfNotNull(
                 workingDir.absolutePath + "/${line.id}.wav",
                 File(workingDir.absolutePath + "/${line.id}-2.wav").takeIf { it.exists() }?.absolutePath
@@ -96,6 +96,7 @@ private fun generateLines(
 private fun processLines(
     filteredLines: List<Line>,
     coquiDir: File,
+    character: String,
     playerName: String,
     overrides: Map<String, String>,
     lineOverrideFile: File,
@@ -108,7 +109,7 @@ private fun processLines(
 ) {
     filteredLines.forEach { line ->
         try {
-            val ttsOut = File(coquiDir.absolutePath + "/out/$playerName/${line.id}.wav")
+            val ttsOut = File(coquiDir.absolutePath + "/out/$character/$playerName/${line.id}.wav")
             Files.copy(ttsOut.toPath(), tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
 
             val silences = getSilences(tempFile)

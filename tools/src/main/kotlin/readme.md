@@ -76,7 +76,11 @@ Instructions
 - Update config with tts.directory where `coqui-tts` is installed (follow tts setup, tts.voice is not needed since you'll use characters)
 - Update config with `sayMyName.stagingDirectory` where your working directory will be
 - Update config with `sayMyName.characters` as a list of names equivalent to `tts.voice`
-
+- Copy files to windows computer
+- WWise (shift + i) import folder with all audio
+- WWise convert all audio files
+- Copy audio back over from cache `C:\Users\vboxuser\Documents\WwiseProjects\Starfield\.cache\Windows\SFX`
+- Run Mod Prepper to create zippable folders
 
 ### Convert wem to wav WIP
 ```

@@ -11,7 +11,7 @@ To see which file to download, see the name groups listed [url=https://github.co
 
 [youtube]ntfGE45APko[/youtube]
 
-If you like this mod, check out my [url=https://manapart.github.io/starfield-eye/#about]companion app[/url], and my [url=https://www.nexusmods.com/starfield/users/myaccount?tab=files]other Starfield mods[/url]
+If you like this mod, check out my [url=https://manapart.github.io/starfield-eye/#about]companion app[/url], and my [url=https://www.nexusmods.com/starfield/users/1398716?tab=user+files]other Starfield mods[/url]
 
 
 

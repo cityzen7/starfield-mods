@@ -1,4 +1,5 @@
 data class Recipe(
+    val character: String,
     val playerName: String,
     val lines: List<Line>,
     val stats: SayMyNamePlayerNameStats = SayMyNamePlayerNameStats(playerName, 0),
